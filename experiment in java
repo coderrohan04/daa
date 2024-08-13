@@ -1,0 +1,179 @@
+----------------------------------------------------------------------Experiment 04
+import java.util.NoSuchElementException;
+
+// Abstract class representing a generic LinkedList
+abstract class LinkedList {
+    // Inner class representing a node in the linked list
+    protected class Node {
+        int data;       // Data stored in the node
+        Node prev;      // Pointer to the previous node
+        Node next;      // Pointer to the next node
+
+        // Constructor to initialize the node with data
+        Node(int data) {
+            this.data = data;
+            this.prev = null;
+            this.next = null;
+        }
+    }
+
+    protected Node head;  // Head of the linked list
+    protected Node tail;  // Tail of the linked list
+
+    // Constructor to initialize an empty linked list
+    public LinkedList() {
+        head = null;
+        tail = null;
+    }
+
+    // Abstract method to link nodes in a specific way (to be defined in subclasses)
+    protected abstract void linkNodes(Node newNode);
+
+    // Method to insert a new node at the beginning of the linked list
+    public void insertAtBeginning(int data) {
+        Node newNode = new Node(data);  // Create a new node with the given data
+        if (head == null) {  // If the list is empty
+            head = tail = newNode;      // Set both head and tail to the new node
+            newNode.next = newNode.prev = newNode;  // Point to itself (circular)
+        } else {
+            linkNodes(newNode);  // Link the new node according to the subclass logic
+            head = newNode;      // Update the head to the new node
+        }
+    }
+
+    // Method to insert a new node at the end of the linked list
+    public void insertAtEnd(int data) {
+        Node newNode = new Node(data);  // Create a new node with the given data
+        if (tail == null) {  // If the list is empty
+            head = tail = newNode;      // Set both head and tail to the new node
+            newNode.next = newNode.prev = newNode;  // Point to itself (circular)
+        } else {
+            linkNodes(newNode);  // Link the new node according to the subclass logic
+            tail = newNode;      // Update the tail to the new node
+        }
+    }
+
+    // Method to delete a node from the beginning of the linked list
+    public void deleteFromBeginning() {
+        if (head == null) {  // If the list is empty
+            System.out.println("List is empty. Cannot delete.");
+            return;
+        }
+        if (head == tail) {  // If there's only one node
+            head = tail = null;  // Set both head and tail to null
+        } else {
+            Node temp = head;  // Temporary reference to the current head
+            head = head.next;  // Move head to the next node
+            head.prev = tail;  // Update the previous pointer of the new head
+            tail.next = head;  // Update the next pointer of the tail
+            temp = null;  // Allow garbage collection to clean up the old head
+        }
+    }
+
+    // Method to delete a node from the end of the linked list
+    public void deleteFromEnd() {
+        if (tail == null) {  // If the list is empty
+            System.out.println("List is empty. Cannot delete.");
+            return;
+        }
+        if (head == tail) {  // If there's only one node
+            head = tail = null;  // Set both head and tail to null
+        } else {
+            Node temp = tail;  // Temporary reference to the current tail
+            tail = tail.prev;  // Move tail to the previous node
+            tail.next = head;  // Update the next pointer of the new tail
+            head.prev = tail;  // Update the previous pointer of the head
+            temp = null;  // Allow garbage collection to clean up the old tail
+        }
+    }
+
+    // Method to display the elements of the linked list
+    public void display() {
+        if (head == null) return;  // If the list is empty, do nothing
+        Node current = head;
+        do {
+            System.out.print(current.data + " ");  // Print the data of the current node
+            current = current.next;  // Move to the next node
+        } while (current != head);  // Continue until we're back at the head
+        System.out.println();
+    }
+}
+
+// Subclass representing a circular doubly linked list
+class CircularDoublyLinkedList extends LinkedList {
+    @Override
+    protected void linkNodes(Node newNode) {
+        // Link the new node to the current head and tail
+        newNode.next = head;
+        newNode.prev = tail;
+        // Update the previous pointer of the head and next pointer of the tail
+        tail.next = newNode;
+        head.prev = newNode;
+    }
+}
+
+// Subclass representing a non-circular doubly linked list
+class DoublyLinkedList extends LinkedList {
+    @Override
+    protected void linkNodes(Node newNode) {
+        // Link the new node to the tail and set its next pointer to null
+        newNode.next = null;
+        newNode.prev = tail;
+        // Update the next pointer of the current tail to the new node
+        tail.next = newNode;
+    }
+
+    @Override
+    public void display() {
+        // Display method for non-circular list (iterates until the end)
+        Node current = head;
+        while (current != null) {
+            System.out.print(current.data + " ");  // Print the data of the current node
+            current = current.next;  // Move to the next node
+        }
+        System.out.println();
+    }
+}
+
+// Main class to demonstrate the functionality of the linked lists
+public class Main {
+    public static void main(String[] args) {
+        // For Circular Doubly Linked List
+        CircularDoublyLinkedList circularList = new CircularDoublyLinkedList();
+        circularList.insertAtBeginning(1);  // Insert 1 at the beginning
+        circularList.insertAtBeginning(2);  // Insert 2 at the beginning
+        System.out.print("Circular List after insertion at beginning: ");
+        circularList.display();  // Display the circular list
+
+        circularList.insertAtEnd(3);  // Insert 3 at the end
+        System.out.print("Circular List after insertion at end: ");
+        circularList.display();  // Display the circular list
+
+        circularList.deleteFromBeginning();  // Delete from the beginning
+        System.out.print("Circular List after deletion from beginning: ");
+        circularList.display();  // Display the circular list
+
+        circularList.deleteFromEnd();  // Delete from the end
+        System.out.print("Circular List after deletion from end: ");
+        circularList.display();  // Display the circular list
+
+        // For Doubly Linked List
+        DoublyLinkedList doublyList = new DoublyLinkedList();
+        doublyList.insertAtBeginning(10);  // Insert 10 at the beginning
+        doublyList.insertAtBeginning(20);  // Insert 20 at the beginning
+        System.out.print("Doubly List after insertion at beginning: ");
+        doublyList.display();  // Display the doubly linked list
+
+        doublyList.insertAtEnd(30);  // Insert 30 at the end
+        System.out.print("Doubly List after insertion at end: ");
+        doublyList.display();  // Display the doubly linked list
+
+        doublyList.deleteFromBeginning();  // Delete from the beginning
+        System.out.print("Doubly List after deletion from beginning: ");
+        doublyList.display();  // Display the doubly linked list
+
+        doublyList.deleteFromEnd();  // Delete from the end
+        System.out.print("Doubly List after deletion from end: ");
+        doublyList.display();  // Display the doubly linked list
+    }
+}
