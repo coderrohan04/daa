@@ -177,3 +177,37 @@ public class Main {
         doublyList.display();  // Display the doubly linked list
     }
 }
+
+
+-------------------------------------------------------------------------------experiment 03
+import java.util.Arrays;
+
+public class Main {
+    
+    public static void findFrequencies(int[] arr, int n) {
+        int freq = 1; // Frequency counter
+        int idx = 1; // Index to traverse the array
+        int element = arr[0]; // First element to compare
+        
+        while (idx < n) {
+            if (arr[idx - 1] == arr[idx]) {
+                freq++; // Increment frequency if the same element is found
+            } else {
+                System.out.println(element + " > " + freq); // Print frequency of the current element
+                element = arr[idx]; // Update element to the new one
+                freq = 1; // Reset frequency for the new element
+            }
+            idx++; // Move to the next element
+        }
+        // Print the frequency of the last element
+        System.out.println(element + " > " + freq);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Frequencies in a sorted Array :-");
+        int[] arr = {10, 20, 30, 30, 30, 40, 50, 50, 50, 50, 70};
+        int n = arr.length; // Calculate number of elements in arr
+        findFrequencies(arr, n); // Call the function to find frequencies
+    }
+}
+
